@@ -15,7 +15,7 @@ class Renderer<T> extends Fractal<T> {
         this.container = container
     }
 
-    async *collector() {
+    *collector() {
         try {
             const { root, container } = this
 
@@ -41,9 +41,11 @@ class Renderer<T> extends Fractal<T> {
     }
 }
 
-export async function render(root: Fractal<FractalJSX.Child>, container: HTMLElement | SVGElement = document.body) {
+export function render(root: Fractal<FractalJSX.Child>, container: HTMLElement | SVGElement = document.body) {
     const renderer = new Renderer(root, container)
     const atom = new Atom(renderer)
 
-    await atom.activate()
+    atom.update()
+
+    return () => atom.destroy()
 }
