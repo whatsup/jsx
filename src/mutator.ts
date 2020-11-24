@@ -168,6 +168,7 @@ export function placeElements(node: HTMLElement | SVGElement, elements: (HTMLEle
 
         if (childNodes[i] !== element) {
             if (element.parentNode === node) {
+                // swap nodes
                 node.insertBefore(childNodes[i], element)
             }
 
