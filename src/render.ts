@@ -1,24 +1,12 @@
-import { Fractal, FractalOptions, Atom } from '@fract/core'
+import { run } from '@fract/core'
+import { Stream } from '@fract/core/dist/stream'
 import { reconcile, placeElements, removeUnreconciledElements } from './mutator'
 import { ReconcileMap } from './reconcile_map'
 import { FractalJSX } from './types'
 
-interface RendererOptions extends FractalOptions {}
-
-class Renderer<T> extends Fractal<T> {
-    readonly root: Fractal<FractalJSX.Child>
-    readonly container: HTMLElement | SVGElement
-
-    constructor(root: Fractal<FractalJSX.Child>, container: HTMLElement | SVGElement, options?: RendererOptions) {
-        super(options)
-        this.root = root
-        this.container = container
-    }
-
-    *collector() {
+export function render(root: Stream<FractalJSX.Child>, container: HTMLElement | SVGElement = document.body) {
+    return run(function* () {
         try {
-            const { root, container } = this
-
             let oldReconcileMap = new ReconcileMap()
 
             while (true) {
@@ -38,14 +26,5 @@ class Renderer<T> extends Fractal<T> {
         } catch (e) {
             console.error(e)
         }
-    }
-}
-
-export function render(root: Fractal<FractalJSX.Child>, container: HTMLElement | SVGElement = document.body) {
-    const renderer = new Renderer(root, container)
-    const atom = new Atom(renderer)
-
-    atom.update()
-
-    return () => atom.destroy()
+    })
 }
