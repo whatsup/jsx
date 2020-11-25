@@ -1,5 +1,4 @@
-import { run } from '@fract/core'
-import { Stream } from '@fract/core/dist/stream'
+import { run, Stream } from '@fract/core'
 import { reconcile, placeElements, removeUnreconciledElements } from './mutator'
 import { ReconcileMap } from './reconcile_map'
 import { FractalJSX } from './types'
