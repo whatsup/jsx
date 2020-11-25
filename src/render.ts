@@ -1,16 +1,16 @@
-import { run, Streamable } from '@fract/core'
+import { run, Stream } from '@fract/core'
 import { reconcile, placeElements, removeUnreconciledElements } from './mutator'
 import { ReconcileMap } from './reconcile_map'
 import { FractalJSX } from './types'
 
-type Source = FractalJSX.Child | Streamable<Source>
+type Source = FractalJSX.Child | Stream<Source>
 
-function* extract(source: Streamable<Source>): Generator<any, FractalJSX.Child, any> {
+function* extract(source: Stream<Source>): Generator<any, FractalJSX.Child, any> {
     const result = yield* source
-    return result instanceof Streamable ? yield* extract(result) : result
+    return result instanceof Stream ? yield* extract(result) : result
 }
 
-export function render(source: Streamable<FractalJSX.Child>, container: HTMLElement | SVGElement = document.body) {
+export function render(source: Stream<FractalJSX.Child>, container: HTMLElement | SVGElement = document.body) {
     return run(function* () {
         try {
             let oldReconcileMap = new ReconcileMap()
