@@ -20,7 +20,7 @@
         "prepublishOnly": "npm run build"
     },
     "dependencies": {
-        "@fract/core": "0.2.0-sync.16",
+        "@fract/core": "0.2.0",
         "csstype": "^3.0.3"
     },
     "peerDependencies": {},
