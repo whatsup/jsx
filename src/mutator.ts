@@ -1,4 +1,4 @@
-import { Mutator } from 'whatsup'
+import { Mutator, Conse } from 'whatsup'
 import { EMPTY_OBJ, NON_DIMENSIONAL_STYLE_PROP, SVG_NAMESPACE } from './constants'
 import { ReconcileMap } from './reconcile_map'
 import { WhatsJSX } from './types'
@@ -26,11 +26,16 @@ export abstract class JsxMutator<T extends WhatsJSX.Type, R> extends Mutator<R> 
     readonly type: T
     readonly uid: WhatsJSX.Uid
     readonly key: WhatsJSX.Key | undefined
-    readonly ref: WhatsJSX.Ref | undefined
+    readonly ref: WhatsJSX.Ref | Conse<WhatsJSX.Ref> | undefined
     readonly reconcileId: string
     result!: R
 
-    constructor(type: T, uid: WhatsJSX.Uid, key: WhatsJSX.Key | undefined, ref: WhatsJSX.Ref | undefined) {
+    constructor(
+        type: T,
+        uid: WhatsJSX.Uid,
+        key: WhatsJSX.Key | undefined,
+        ref: WhatsJSX.Ref | Conse<WhatsJSX.Ref> | undefined
+    ) {
         super()
         this.type = type
         this.uid = uid
@@ -56,7 +61,13 @@ export abstract class JsxMutator<T extends WhatsJSX.Type, R> extends Mutator<R> 
 
     private updateRef(target: R) {
         if (this.ref) {
-            this.ref.current = Array.isArray(target) && target.length === 1 ? target[0] : target
+            const element = Array.isArray(target) && target.length === 1 ? target[0] : target
+
+            if (this.ref instanceof Conse) {
+                this.ref.set({ current: element })
+            } else {
+                this.ref.current = element
+            }
         }
     }
 
@@ -76,7 +87,8 @@ export abstract class JsxMutator<T extends WhatsJSX.Type, R> extends Mutator<R> 
     }
 }
 
-export abstract class JsxElementMutator extends JsxMutator<WhatsJSX.TagName, HTMLElement | SVGElement>
+export abstract class JsxElementMutator
+    extends JsxMutator<WhatsJSX.TagName, HTMLElement | SVGElement>
     implements WhatsJSX.ElementMutatorLike<HTMLElement | SVGElement> {
     protected abstract createElement(): HTMLElement | SVGElement
 
@@ -87,7 +99,7 @@ export abstract class JsxElementMutator extends JsxMutator<WhatsJSX.TagName, HTM
         type: WhatsJSX.TagName,
         uid: WhatsJSX.Uid,
         key: WhatsJSX.Key | undefined,
-        ref: WhatsJSX.Ref | undefined,
+        ref: WhatsJSX.Ref | Conse<WhatsJSX.Ref> | undefined,
         props: WhatsJSX.ElementProps,
         children: WhatsJSX.Child[]
     ) {
@@ -123,7 +135,8 @@ export class HTMLElementMutator extends JsxElementMutator {
     }
 }
 
-export class ComponentMutator extends JsxMutator<WhatsJSX.Component, (HTMLElement | SVGElement | Text)[]>
+export class ComponentMutator
+    extends JsxMutator<WhatsJSX.Component, (HTMLElement | SVGElement | Text)[]>
     implements WhatsJSX.ComponentMutatorLike<(HTMLElement | SVGElement | Text)[]> {
     readonly children: WhatsJSX.Child[]
     readonly reconcileMap = new ReconcileMap()

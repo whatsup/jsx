@@ -1,3 +1,4 @@
+import { Conse } from 'whatsup'
 import { EMPTY_ARR, EMPTY_OBJ } from './constants'
 import { ComponentMutator, HTMLElementMutator, SVGElementMutator } from './mutator'
 import { WhatsJSX } from './types'
@@ -6,7 +7,7 @@ export function html(
     type: WhatsJSX.TagName,
     uid: WhatsJSX.Uid,
     key: WhatsJSX.Key | undefined,
-    ref: WhatsJSX.Ref | undefined,
+    ref: WhatsJSX.Ref | Conse<WhatsJSX.Ref> | undefined,
     props = EMPTY_OBJ as WhatsJSX.ElementProps,
     children = EMPTY_ARR as WhatsJSX.Child[]
 ) {
