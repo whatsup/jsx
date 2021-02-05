@@ -808,6 +808,7 @@ export namespace WhatsJSX {
         width?: number | string
 
         onChange?: ChangeEventHandler<T>
+        onInput?: ChangeEventHandler<T>
     }
 
     export interface KeygenHTMLAttributes<T> extends HTMLAttributes<T> {
